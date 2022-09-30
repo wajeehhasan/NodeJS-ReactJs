@@ -1,13 +1,12 @@
 import { LiveVideo } from "./svg";
 
 function App() {
-  return (
-    <div>
-      <div>welcome to frontend</div>
-      <div class="all_friends_icon"></div>
-      <LiveVideo />
-    </div>
-  );
+  const get = async () => {
+    const res = await fetch("http://localhost:8000");
+    console.log(res);
+  };
+  get();
+  return <div>FrontEnd React Fbclone</div>;
 }
 
 export default App;
