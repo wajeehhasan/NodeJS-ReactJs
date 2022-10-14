@@ -2,6 +2,7 @@ const express = require("express");
 const { readdirSync } = require("fs");
 const dotenv = require("dotenv");
 const app = express();
+const mongoose = require("mongoose");
 
 //calling environment file start
 dotenv.config();
@@ -24,13 +25,17 @@ function options(req, res) {
   }
   res(null, tmp);
 }
-app.use(cors(options));
-
-//cors settings end
-
 // const useRoutes = require("./routes/user");
 // app.use("/", useRoutes);
 readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
+app.use(cors(options));
+app.use(express.json());
+//database
+mongoose
+  .connect(process.env.dbUrl)
+  .then(() => console.log("database connected successfully"))
+  .catch((err) => console.log("error connecting to Mongodb : ", err));
+//cors settings end
 
 app.get("/", (req, res) => {
   res.send("this is home dir");
