@@ -1,3 +1,6 @@
 exports.userHome = (req, res) => {
-  res.send("welcome from user.js");
+  res.status(200).json({
+    message: "this is from user",
+    error: "No error",
+  });
 };
