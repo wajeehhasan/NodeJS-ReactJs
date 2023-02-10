@@ -27,7 +27,7 @@ function options(req, res) {
 }
 // const useRoutes = require("./routes/user");
 // app.use("/", useRoutes);
-readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
+readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r))); //here route folder is being registered as a controller
 app.use(cors(options));
 app.use(express.json());
 //database
