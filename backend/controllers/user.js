@@ -1,6 +1,11 @@
-exports.userHome = (req, res) => {
-  res.status(200).json({
-    message: "this is from user",
-    error: "No error",
-  });
+const users = require("../models/User.js");
+exports.register = async (req, res) => {
+  res.send("working");
+};
+const register = (req, res) => {
+  res.send("not implemented");
+};
+
+module.exports = {
+  register,
 };

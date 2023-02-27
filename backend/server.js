@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 //calling environment file start
 dotenv.config();
+// npm run fbclone will run nodejs server with nodemon tracking changes
 //calling environment file end
 //cors setting start
 const cors = require("cors");
