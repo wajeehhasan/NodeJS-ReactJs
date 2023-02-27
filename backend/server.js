@@ -28,9 +28,17 @@ function options(req, res) {
 }
 // const useRoutes = require("./routes/user");
 // app.use("/", useRoutes);
-readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r))); //here route folder is being registered as a controller
-app.use(cors(options));
 app.use(express.json());
+app.use(cors(options));
+readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r))); //here route folder is being registered as a controller
+
+//json response parser
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
+
 //database
 mongoose
   .connect(process.env.dbUrl)
@@ -44,6 +52,10 @@ app.get("/", (req, res) => {
 
 app.get("/bike", (req, res) => {
   res.send("this is bike dir");
+});
+
+app.post("/poster", (req, res) => {
+  console.log(req.body);
 });
 
 //const PORT = process.env.PORT || 8000; //GETTING variables from evn if it exits and if not it will be 8000

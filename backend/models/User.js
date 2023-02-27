@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const ObjectId = mongoose.Schema;
+
+const { ObjectId } = mongoose.Schema;
 
 const userSchema = mongoose.Schema(
   {
@@ -11,32 +12,36 @@ const userSchema = mongoose.Schema(
     },
     last_name: {
       type: String,
-      required: [true, "last name is requried"],
+      required: [true, "last name is required"],
       trim: true,
       text: true,
     },
     username: {
       type: String,
       required: [true, "username is required"],
-      unique: true,
       trim: true,
+      text: true,
+      unique: true,
     },
+
     email: {
       type: String,
       required: [true, "email is required"],
       trim: true,
     },
     password: {
-      required: [true, "password is required"],
       type: String,
+      required: [true, "password is required"],
     },
     picture: {
       type: String,
-      default: "add default picture url here",
+      trim: true,
+      default:
+        "https://res.cloudinary.com/dmhcnhtng/image/upload/v1643044376/avatars/default_pic_jeaybr.png",
     },
     cover: {
       type: String,
-      default: "add default cover picture url here",
+      trim: true,
     },
     gender: {
       type: String,
@@ -53,7 +58,6 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-
     bDay: {
       type: Number,
       required: true,
@@ -67,15 +71,11 @@ const userSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
-    groups: {
+    following: {
       type: Array,
       default: [],
     },
     followers: {
-      type: Array,
-      default: [],
-    },
-    following: {
       type: Array,
       default: [],
     },
@@ -85,8 +85,10 @@ const userSchema = mongoose.Schema(
     },
     search: [
       {
-        user: ObjectId,
-        ref: "User",
+        user: {
+          type: ObjectId,
+          ref: "User",
+        },
       },
     ],
     details: {
@@ -102,28 +104,27 @@ const userSchema = mongoose.Schema(
       workplace: {
         type: String,
       },
-      highschool: {
+      highSchool: {
+        type: String,
+      },
+      college: {
         type: String,
       },
       currentCity: {
         type: String,
       },
+      hometown: {
+        type: String,
+      },
       relationship: {
         type: String,
-        enum: [
-          "Single",
-          "In a relationship",
-          "Married",
-          "Divorced",
-          "Gamer",
-          "Bread Toaster",
-        ],
+        enum: ["Single", "In a relationship", "Married", "Divorced"],
       },
       instagram: {
         type: String,
       },
     },
-    savedPost: [
+    savedPosts: [
       {
         post: {
           type: ObjectId,
