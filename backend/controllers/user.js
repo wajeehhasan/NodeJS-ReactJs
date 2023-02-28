@@ -1,32 +1,73 @@
-const { validateEmail } = require("../helpers/validation");
-const User = require("../models/User");
+const {
+  validateEmail,
+  validateLength,
+  validateUsername,
+} = require("../helpers/validation");
 
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
 const register = async (req, res) => {
   // console.log(req.body);
-  // const UserResp = ({
-  //   first_name,
+  const UserResp = ({
+    first_name,
 
-  //   last_name,
-  //   email,
-  //   password,
-  //   username,
-  //   bYear,
-  //   bMonth,
-  //   bDay,
-  //   gender,
-  // } = req.body);
+    last_name,
+    email,
+    password,
+    username,
+    bYear,
+    bMonth,
+    bDay,
+    gender,
+  } = req.body);
   try {
-    if (!validateEmail(req.body.email)) {
+    // const email = req.body.email;
+    // const first_name = req.body.first_name;
+    // const last_name = req.body.last_name;
+    // const password = req.body.password;
+    if (!validateEmail(email)) {
       return res.status(400).json({
         message: "invalid email address",
       });
-    } else {
-      return res.status(200).json({
-        message: "email address works",
+    }
+    const EmailDbCheck = await User.findOne({ email });
+    if (EmailDbCheck) {
+      return res.status(400).json({
+        message: "Account with this email already exits",
       });
     }
-    return;
-    const user = await new User(req.body).save();
+    if (!validateLength(first_name, 2, 16)) {
+      return res.status(400).json({
+        message:
+          "First Name should be greater than 2 and less than 16 characters",
+      });
+    }
+    if (!validateLength(last_name, 2, 16)) {
+      return res.status(400).json({
+        message:
+          "Last Name should be greater than 2 and less than 16 characters",
+      });
+    }
+    if (!validateLength(password, 5, 20)) {
+      return res.status(400).json({
+        message:
+          "Password should be greater than 5 and less than 20 characters",
+      });
+    }
+    let username = first_name + last_name;
+    let EncryptedPassword = await bcrypt.hash(password, 12);
+    let validatedUsername = await validateUsername(username);
+    const user = await new User({
+      first_name,
+      last_name,
+      email,
+      password: EncryptedPassword,
+      username: validatedUsername,
+      bYear,
+      bMonth,
+      bDay,
+      gender,
+    }).save();
 
     res.json(user);
   } catch (error) {
