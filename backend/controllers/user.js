@@ -3,7 +3,7 @@ const {
   validateLength,
   validateUsername,
 } = require("../helpers/validation");
-
+const { sendVerificationEmail } = require("../helpers/mailer");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../helpers/token");
@@ -73,8 +73,20 @@ const register = async (req, res) => {
       { id: user._id.toString() },
       "30m"
     );
+    const activation_url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
+    sendVerificationEmail(user.email, user.first_name, activation_url);
+    const token = generateToken({ id: user._id.toString() }, "7d");
     console.log(emailVerificationToken);
-    res.json(user);
+    res.send({
+      id: user._id,
+      username: user.username,
+      picture: user.picture,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      token: token,
+      verified: user.verified,
+      message: "User Registered! Check your email to activate your account!",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
