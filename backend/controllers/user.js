@@ -95,21 +95,59 @@ const register = async (req, res) => {
 };
 
 const activateAccount = async (req, res) => {
-  const { token } = req.body;
-  const decryptedUserdetails = jwt.verify(token, process.env.TOKEN_KEY);
-  const user = await User.findById(decryptedUserdetails.id);
-  if (user.verified == true) {
-    return res.status(400).json({
-      message: "This email is already Activated",
+  try {
+    const { token } = req.body;
+    const decryptedUserdetails = jwt.verify(token, process.env.TOKEN_KEY);
+    const user = await User.findById(decryptedUserdetails.id);
+    if (user.verified == true) {
+      return res.status(400).json({
+        message: "This email is already Activated",
+      });
+    } else {
+      await User.findByIdAndUpdate(decryptedUserdetails.id, {
+        verified: true,
+      });
+      return res.status(200).json({
+        message: "Account activation complete!",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
     });
-  } else {
-    await User.findByIdAndUpdate(decryptedUserdetails.id, { verified: true });
-    return res.status(200).json({
-      message: "Account activation complete!",
+  }
+};
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    console.log("email : " + email + " password : " + password);
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(400).json({
+        message:
+          "The email address you entered is not connected to an account.",
+      });
+    }
+    const passCheck = await bcrypt.compare(password, user.password);
+    console.log(passCheck);
+    if (!passCheck) {
+      res.status(400).json({
+        message: "Invalid credentials. Please Try again.",
+      });
+    }
+    if (passCheck & (user != null)) {
+      return res.status(200).json({
+        message: "login Successfull!",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
     });
   }
 };
 module.exports = {
   register,
   activateAccount,
+  login,
 };
