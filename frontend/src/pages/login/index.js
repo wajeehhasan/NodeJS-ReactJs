@@ -3,11 +3,12 @@ import { Formik, Form } from "formik";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import LoginInput from "../../components/inputs/loginInput";
+import * as Yup from "yup";
 
 //////in code comments
 //line 55 start
 //enable reinitialize here allows reinitialize email and password variable instead of making new local variable
-// within this function, now, it takes them from loginInfos array
+// within this function, now, it takes them from loginInfos(@ line 18) array
 //line 55 ends
 //line 56 start
 //initialValues maps values within this array to formik inputs
@@ -19,10 +20,19 @@ const loginInfos = {
   email: "",
   password: "",
 };
+//we use liberary Yup to validate our inputs
+const loginValidation = Yup.object({
+  email: Yup.string()
+    .required("Email Required")
+    .email("Must be a valid Email")
+    .max(100),
+  password: Yup.string().required("Password Required"), //this will popup errors if this validation fails, and error div will be defined in the component
+});
 
 export default function Login() {
   //here we are delcaring a variable by the name "login" and a method to change it by the name "setLogin" with login's properties being defined
   //by loginInfos os login -> {email, password} also, setLogin("newloginvalues"); can be used like that to change login value
+  //useState is the most commonly used react hook, it is used to assign state to variables within component
   const [login, setLogin] = useState(loginInfos);
   //here we are extracting the properties of login to be used in our form and these properties will be reinitialize in our form
   const { email, password } = login;
@@ -57,12 +67,13 @@ export default function Login() {
                   email,
                   password,
                 }}
+                validationSchema={loginValidation}
               >
                 {(formik) => (
                   <Form>
                     <LoginInput
                       type="email"
-                      name="email"
+                      name="email" //formik bind the variable to the input with name field.
                       placeholder="Email address or phone number"
                       //whenever the value for this input is changed this fucntion will be called
                       onChange={handleLoginChange}
@@ -73,6 +84,7 @@ export default function Login() {
                       placeholder="Password"
                       //whenever the value for this input is changed this fucntion will be called
                       onChange={handleLoginChange}
+                      bottom
                     />
                     <button type="submit" className="blue_btn">
                       Log In
@@ -87,7 +99,7 @@ export default function Login() {
               <button className="blue_btn open_signup">Create Account</button>
             </div>
             <Link to="/" className="sign_extra">
-              <b>Create a Page</b>
+              <b>Create a Page </b>
               for a celebrity, brand or business.
             </Link>
           </div>
