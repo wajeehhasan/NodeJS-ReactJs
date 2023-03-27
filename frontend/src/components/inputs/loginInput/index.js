@@ -55,14 +55,18 @@ export default function LoginInput({ placeholder, bottom, ...props }) {
             //so even if we conditionalize this it will just hide the text and not the "red" div for error which is hidden by condition written above its parent div
           }
           {meta.touched && meta.error && (
-            <div className="error_arrow_bottom"></div>
+            <div
+              className={
+                desktopView ? "error_arrow_left" : "error_arrow_bottom"
+              }
+            ></div>
           )}
         </div>
       )}
       {meta.touched && meta.error && (
         <i
           className="error_icon"
-          style={{ top: `${!bottom && !desktopView && "63%"}` }}
+          style={{ top: `${!bottom && !desktopView ? "63%" : "15px"}` }}
         ></i>
       )}
     </div>
