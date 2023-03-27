@@ -1,11 +1,20 @@
 import "./style.css";
 import { ErrorMessage, useField } from "formik";
+import { useMediaQuery } from "react-responsive";
 export default function LoginInput({ placeholder, bottom, ...props }) {
   const [field, meta] = useField(props);
+  const desktopView = useMediaQuery({
+    query: "(min-width : 850px)",
+  });
+  console.log(desktopView);
   return (
     <div className="input_wrap">
       {meta.touched && meta.error && !bottom && (
-        <div className="input_error">
+        <div
+          className={
+            desktopView ? "input_error input_error_desktop" : "input_error"
+          }
+        >
           {
             //meta.touched -> we are using touched property because when validation fails in yup/formik entire validation schema will
             //run and it will show errors for every fields
@@ -16,8 +25,7 @@ export default function LoginInput({ placeholder, bottom, ...props }) {
           }
           {meta.touched && meta.error && (
             <div
-              className="error_arrow_top
-            "
+              className={desktopView ? "error_arrow_left" : "error_arrow_top"}
             ></div>
           )}
         </div>
@@ -32,7 +40,12 @@ export default function LoginInput({ placeholder, bottom, ...props }) {
         {...props}
       />
       {meta.touched && meta.error && bottom && (
-        <div className="input_error" style={{ transform: "translateY(2px)" }}>
+        <div
+          className={
+            desktopView ? "input_error input_error_desktop" : "input_error"
+          }
+          style={{ transform: "translateY(2px)" }}
+        >
           {
             //meta.touched -> we are using touched property because when validation fails in yup/formik entire validation schema will
             //run and it will show errors for every fields
@@ -47,7 +60,10 @@ export default function LoginInput({ placeholder, bottom, ...props }) {
         </div>
       )}
       {meta.touched && meta.error && (
-        <i className="error_icon" style={{ top: `${!bottom && "63%"}` }}></i>
+        <i
+          className="error_icon"
+          style={{ top: `${!bottom && !desktopView && "63%"}` }}
+        ></i>
       )}
     </div>
   );
